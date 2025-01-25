@@ -12,14 +12,20 @@
         Result: <div id="result"></div>
         <script>
             function parselan(array) {
-                // Base case: if the array has only one element
+                if (array.length === 0) {
+                    return `{1}`
+                }
+
                 if (array.length === 1) {
                     return `${array[0]}`;
                 }
                 
-                // Base case: if the array has two elements
                 if (array.length === 2) {
                     return `${Math.pow(array[0], array[1])}`;
+                }
+
+                if (array[array.length - 1] === 1) {
+                    return `${array.slice(0, array.length - 1).join(',')}`
                 }
                 
                 // Rule 3: if the third element is 1
