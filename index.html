@@ -5,15 +5,16 @@
     </head>
     <body>
         <h1>LAN solver</h1>
-        <form onsubmit="parse()">
+        <form onsubmit="parse(event)">
             <textarea id="beaf" name="beaf">{3,3,3}</textarea>
-            <input type="submit">Solve</input>
+            <input type="submit" value="Solve">
         </form><br>
         Result: <div id="result"></div>
         <script>
-            function parse() {
-                const result = document.getElementById('beaf').innerText.slice(1, -1).split(',').map(Number)
-                document.getElementById('result').innerHTML = result;
+            function parse(event) {
+                event.preventDefault(); // Prevent the form from reloading the page
+                const result = document.getElementById('beaf').value.slice(1, -1).split(',').map(Number);
+                document.getElementById('result').innerHTML = result.join(', ');
             }
         </script>
     </body>
