@@ -11,61 +11,66 @@
         </form><br>
         Result: <div id="result"></div>
         <script>
-            function parselan(array) {
-                if (array.length === 0) {
-                    return `{1}`
-                }
+            function parselan(inputString) {
+                var leftInnerExpression = inputString.slice(inputString.lastIndexOf("{"));
+                var innerExpression = leftInnerExpression.slice(0,leftInnerExpression.indexOf("}")+1);
+                var Array = innerExpression.replace("{","").replace("}","").split(",");
+                var beforeInnerExpression = inputString.slice(0,inputString.lastIndexOf("{"));
+                var afterInnerExpression = leftInnerExpression.slice(leftInnerExpression.indexOf("}")+1);
+    
+                var base = Array[0];
+                var iterator = Array[1];
+                var outputString = "";
 
-                if (array.length === 1) {
-                    return `${array[0]}`;
-                }
-                
-                if (array.length === 2) {
-                    return `${Math.pow(array[0], array[1])}`;
-                }
-
-                if (array[array.length - 1] === 1) {
-                    return `${array.slice(0, array.length - 1).join(',')}`
-                }
-                
-                // Rule 3: if the third element is 1
-                if (array[2] === 1) {
-                    // Find the last 1 before the first non-1 element c
-                    let cIndex = 2;
-                    while (array[cIndex] === 1) {
-                        cIndex++;
+                if (inputString.indexOf("{") == -1) { // No array
+                    outputString = "";
+                } else if (Array.length == 1 && Array[0] == "") {
+                    outputString = "1";
+                } else if (Array.length == 1) { // Rule 1
+                    outputString = Array[0] + "";
+                } else if (Array.length == 2) { // Rule 1
+                    var logNumber = Array[1] * Math.log10(Array[0]);
+                    if (logNumber >= 300 && logNumber < 1e21) {
+                        outputString = 10**(logNumber%1) + "e+" + Math.floor(logNumber);
+                    } else {
+                        outputString = Array[0] ** Array[1] + "";
                     }
-                    let c = array[cIndex];
-                    
-                    // Transform the array
-                    let newArray = [...array.slice(0, cIndex).fill(array[0]), parselan([array[0], array[1] - 1, ...array.slice(cIndex)]), c - 1, ...array.slice(cIndex + 1)];
-                    return `{${newArray.join(',')}}`;
-                }
-
-                // Rule 4: general case
-                let subArray = parselan([array[0], array[1] - 1, ...array.slice(2)]);
-                let newArray = [array[0], subArray, array[2] - 1, ...array.slice(3)];
-                return `{${newArray.join(',')}}`;
-            }
-
-            // Additional safety check for large or deeply nested arrays
-            function safeParselan(array) {
-                // A maximum depth to prevent infinite recursion
-                const MAX_DEPTH = 1000;
-
-                function helper(arr, depth) {
-                    if (depth > MAX_DEPTH) {
-                        throw new Error("Exceeded maximum recursion depth");
+                } else if (Array[Array.length-1] == 1) { // Rule 2
+                    Array.pop()
+                    outputString = "{" + Array + "}";
+                } else if (Array[1] == 1) { // Rule 3
+                    outputString = Array[0] + "";
+                } else {
+                    var pilot = 2;
+                    while (Array[pilot] == 1) {
+                        pilot++;
                     }
-                    return parselan(arr);
+                    var copilot = pilot - 1;
+                    var innerArray = Array.toString().split(",");
+                    innerArray[1]--; // reduce 2nd entry of inner array by 1
+                    Array[pilot]--;
+                    for (j = 0; j < copilot; j++) {
+                        Array[j] = base; // change all entries before copilot into the base
+                    }
+                    var leftArray = Array.slice(0,copilot);
+                    var rightArray = Array.slice(pilot);
+                    outputString = "{" + leftArray + ",{" + innerArray + "}," + rightArray + "}";
+                    if (innerArray[1] == 1) {
+                        innerArray = base;
+                        outputString = "{" + leftArray + "," + innerArray + "," + rightArray + "}";
+                    }
                 }
+                var resultString = beforeInnerExpression + outputString + afterInnerExpression;
 
-                return helper(array, 0);
+                while (resultString.indexOf(",1}") != -1) {
+                    resultString = resultString.replace(",1}","}");
+                }
+                return resultString
             }
 
             function parse(event) {
                 event.preventDefault(); // Prevent the form from reloading the page
-                const result = safeParselan(document.getElementById('beaf').value.slice(1, -1).split(',').map(Number));
+                const result = parselan(document.getElementById('beaf').value);
                 document.getElementById('result').innerHTML = result;
             }
         </script>
