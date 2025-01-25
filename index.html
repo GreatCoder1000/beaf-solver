@@ -32,8 +32,7 @@
                     let c = array[cIndex];
                     
                     // Transform the array
-                    let subArray = parselan([array[0], array[1] - 1, ...array.slice(2, cIndex)]);
-                    let newArray = [...array.slice(0, cIndex).fill(array[0]), subArray, c - 1, ...array.slice(cIndex + 1)];
+                    let newArray = [...array.slice(0, cIndex).fill(array[0]), parselan([array[0], array[1] - 1, ...array.slice(cIndex)]), c - 1, ...array.slice(cIndex + 1)];
                     return `{${newArray.join(',')}}`;
                 }
 
