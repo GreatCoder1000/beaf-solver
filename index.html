@@ -11,7 +11,6 @@
         </form><br>
         Result: <div id="result"></div>
         <script>
-            // Pseudocode for the function returning a string
             function parselan(array) {
                 // Base case: if the array has only one element
                 if (array.length === 1) {
@@ -33,19 +32,35 @@
                     let c = array[cIndex];
                     
                     // Transform the array
-                    let newArray = [...array.slice(0, cIndex).fill(array[0]), ...[parselan([array[0], array[1] - 1, ...array.slice(2, cIndex)]), c - 1, ...array.slice(cIndex + 1)]];
+                    let subArray = parselan([array[0], array[1] - 1, ...array.slice(2, cIndex)]);
+                    let newArray = [...array.slice(0, cIndex).fill(array[0]), subArray, c - 1, ...array.slice(cIndex + 1)];
                     return `{${newArray.join(',')}}`;
                 }
 
                 // Rule 4: general case
-                let newArray = [array[0], parselan([array[0], array[1] - 1, ...array.slice(2)]), array[2] - 1, ...array.slice(3)];
+                let subArray = parselan([array[0], array[1] - 1, ...array.slice(2)]);
+                let newArray = [array[0], subArray, array[2] - 1, ...array.slice(3)];
                 return `{${newArray.join(',')}}`;
             }
 
+            // Additional safety check for large or deeply nested arrays
+            function safeParselan(array) {
+                // A maximum depth to prevent infinite recursion
+                const MAX_DEPTH = 1000;
+
+                function helper(arr, depth) {
+                    if (depth > MAX_DEPTH) {
+                        throw new Error("Exceeded maximum recursion depth");
+                    }
+                    return parselan(arr);
+                }
+
+                return helper(array, 0);
+            }
 
             function parse(event) {
                 event.preventDefault(); // Prevent the form from reloading the page
-                const result = parselan(document.getElementById('beaf').value.slice(1, -1).split(',').map(Number));
+                const result = safeParselan(document.getElementById('beaf').value.slice(1, -1).split(',').map(Number));
                 document.getElementById('result').innerHTML = result;
             }
         </script>
