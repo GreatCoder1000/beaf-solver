@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>LAN solver</title>
+    </head>
+    <body>
+        <h1>LAN solver</h1>
+        <form onsubmit="parse()">
+            <textarea id="beaf" name="beaf">{3,3,3}</textarea>
+            <input type="submit">Solve</input>
+        </form><br>
+        Result: <div id="result"></div>
+        <script>
+            function parse() {
+                const result = document.getElementById('beaf').innerText.slice(1, -1).split(',').map(Number)
+                document.getElementById('result').innerHTML = result;
+            }
+        </script>
+    </body>
+</html>
