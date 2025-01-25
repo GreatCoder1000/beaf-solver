@@ -12,7 +12,7 @@
         Result: <div id="result"></div>
         <script>
             // Pseudocode for the function returning a string
-            function lanparse(array) {
+            function parselan(array) {
                 // Base case: if the array has only one element
                 if (array.length === 1) {
                     return `${array[0]}`;
@@ -33,12 +33,12 @@
                     let c = array[cIndex];
                     
                     // Transform the array
-                    let newArray = [...array.slice(0, cIndex).fill(array[0]), ...[lanparse([array[0], array[1] - 1, ...array.slice(2, cIndex)]), c - 1, ...array.slice(cIndex + 1)]];
+                    let newArray = [...array.slice(0, cIndex).fill(array[0]), ...[parselan([array[0], array[1] - 1, ...array.slice(2, cIndex)]), c - 1, ...array.slice(cIndex + 1)]];
                     return `{${newArray.join(',')}}`;
                 }
 
                 // Rule 4: general case
-                let newArray = [array[0], lanparse([array[0], array[1] - 1, ...array.slice(2)]), array[2] - 1, ...array.slice(3)];
+                let newArray = [array[0], parselan([array[0], array[1] - 1, ...array.slice(2)]), array[2] - 1, ...array.slice(3)];
                 return `{${newArray.join(',')}}`;
             }
 
