@@ -11,10 +11,42 @@
         </form><br>
         Result: <div id="result"></div>
         <script>
+            // Pseudocode for the function returning a string
+            function lanparse(array) {
+                // Base case: if the array has only one element
+                if (array.length === 1) {
+                    return `${array[0]}`;
+                }
+                
+                // Base case: if the array has two elements
+                if (array.length === 2) {
+                    return `${Math.pow(array[0], array[1])}`;
+                }
+                
+                // Rule 3: if the third element is 1
+                if (array[2] === 1) {
+                    // Find the last 1 before the first non-1 element c
+                    let cIndex = 2;
+                    while (array[cIndex] === 1) {
+                        cIndex++;
+                    }
+                    let c = array[cIndex];
+                    
+                    // Transform the array
+                    let newArray = [...array.slice(0, cIndex).fill(array[0]), ...[lanparse([array[0], array[1] - 1, ...array.slice(2, cIndex)]), c - 1, ...array.slice(cIndex + 1)]];
+                    return `{${newArray.join(',')}}`;
+                }
+
+                // Rule 4: general case
+                let newArray = [array[0], lanparse([array[0], array[1] - 1, ...array.slice(2)]), array[2] - 1, ...array.slice(3)];
+                return `{${newArray.join(',')}}`;
+            }
+
+
             function parse(event) {
                 event.preventDefault(); // Prevent the form from reloading the page
-                const result = document.getElementById('beaf').value.slice(1, -1).split(',').map(Number);
-                document.getElementById('result').innerHTML = result.join(', ');
+                const result = parselan(document.getElementById('beaf').value.slice(1, -1).split(',').map(Number));
+                document.getElementById('result').innerHTML = result;
             }
         </script>
     </body>
