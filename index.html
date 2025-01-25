@@ -9,9 +9,6 @@
             <textarea id="beaf" name="beaf">{3,3,3}</textarea>
             <input type="submit" value="Solve">
         </form>
-        <button type="button" onclick="passAndSolve()">Pass in Result and Solve</button>
-        <br>
-        Result: <div id="result"></div>
         <script>
             function parselan(inputString) {
                 var leftInnerExpression = inputString.slice(inputString.lastIndexOf("{"));
@@ -73,13 +70,7 @@
             function parse(event) {
                 event.preventDefault(); // Prevent the form from reloading the page
                 const result = parselan(document.getElementById('beaf').value);
-                document.getElementById('result').innerHTML = result;
-            }
-
-            function passAndSolve() {
-                const currentResult = document.getElementById('result').textContent;
-                const newResult = parselan(currentResult);
-                document.getElementById('result').innerHTML = newResult;
+                document.getElementById('beaf').innerHTML = result;
             }
         </script>
     </body>
